@@ -7,12 +7,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Register both the exact case the user asked for, and a lowercase alias for safety.
 add_shortcode( WPDM_SHORTCODE, 'wpdm_render_shortcode' );
 add_shortcode( strtolower( WPDM_SHORTCODE ), 'wpdm_render_shortcode' );
 
 function wpdm_render_shortcode( $atts ) {
-	// Lazy-enqueue: only load assets when the shortcode is actually used on a page.
 	wpdm_enqueue_frontend_assets();
 
 	$markers = get_option( WPDM_OPTION_KEY, array() );
@@ -20,15 +18,16 @@ function wpdm_render_shortcode( $atts ) {
 		$markers = array();
 	}
 
-	// Allow multiple maps per page; each gets a unique container ID.
+	$customise = wpdm_get_customise_settings();
+
 	static $instance = 0;
 	$instance++;
 	$container_id = 'wpdm-map-' . $instance;
 
-	// Hand the markers + data URL to the JS via an inline script attached to the map script handle.
 	$payload = array(
-		'markers'  => $markers,
-		'dataUrl'  => WPDM_URL . 'assets/data/land-110m.json',
+		'markers'   => $markers,
+		'dataUrl'   => WPDM_URL . 'assets/data/land-110m.json',
+		'customise' => $customise,
 	);
 	wp_add_inline_script(
 		'wpdm-map',
@@ -36,9 +35,15 @@ function wpdm_render_shortcode( $atts ) {
 		'before'
 	);
 
+	// Inline style on the container handles the background when "color" mode is on.
+	$bg_style = '';
+	if ( 'color' === $customise['bg_mode'] ) {
+		$bg_style = 'background: ' . esc_attr( $customise['bg_color'] ) . ';';
+	}
+
 	ob_start();
 	?>
-	<div class="wpdm-container" id="<?php echo esc_attr( $container_id ); ?>">
+	<div class="wpdm-container" id="<?php echo esc_attr( $container_id ); ?>" style="<?php echo $bg_style; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
 		<div class="wpdm-loading"><?php esc_html_e( 'loading map…', 'wp-dotmap' ); ?></div>
 		<svg class="wpdm-svg"
 		     viewBox="0 0 1400 700"
@@ -59,7 +64,6 @@ function wpdm_enqueue_frontend_assets() {
 		WPDM_VERSION
 	);
 
-	// D3 + TopoJSON from cdnjs (widely cached, fast).
 	wp_enqueue_script(
 		'wpdm-d3',
 		'https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js',

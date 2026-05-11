@@ -157,3 +157,109 @@
 	align-items: center;
 	gap: 6px;
 }
+
+/* =========================================================================
+ * Customise page
+ * ====================================================================== */
+.wpdm-customise-section {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 8px 22px 20px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.wpdm-customise-section .wpdm-field {
+	border-bottom: 1px solid #f0f0f1;
+	padding-bottom: 18px;
+}
+.wpdm-customise-section .wpdm-field:last-of-type {
+	border-bottom: 0;
+	padding-bottom: 6px;
+}
+
+/* ---- Paired color picker ---- */
+.wpdm-color-picker {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.wpdm-color-picker input[type="color"] {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	background: transparent;
+	cursor: pointer;
+}
+.wpdm-color-picker input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+.wpdm-color-picker input[type="color"]::-webkit-color-swatch { border: none; border-radius: 3px; }
+.wpdm-color-picker input[type="color"]::-moz-color-swatch { border: none; border-radius: 3px; }
+
+.wpdm-color-picker .wpdm-input-color {
+	width: 120px !important;
+	max-width: 120px;
+}
+
+/* ---- Background mode ---- */
+.wpdm-radio-group {
+	display: flex;
+	gap: 18px;
+	flex-wrap: wrap;
+	margin: 4px 0 10px;
+}
+.wpdm-radio {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	cursor: pointer;
+	user-select: none;
+}
+.wpdm-radio input {
+	margin: 0;
+}
+.wpdm-bg-color-row {
+	padding: 8px 12px;
+	background: #f6f7f7;
+	border-radius: 4px;
+	display: inline-block;
+}
+.wpdm-bg-color-row[hidden] {
+	display: none !important;
+}
+
+/* ---- Number inputs with units ---- */
+.wpdm-input-row {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+.wpdm-input-number {
+	width: 100px;
+}
+.wpdm-input-unit {
+	min-width: 70px;
+}
+.wpdm-unit-label {
+	color: #50575e;
+	font-size: 13px;
+}
+
+/* ---- Customise actions footer ---- */
+.wpdm-customise-actions {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+	align-items: center;
+}
+.wpdm-btn-reset {
+	color: #b32d2e !important;
+	border-color: #b32d2e !important;
+}
+.wpdm-btn-reset:hover {
+	background: #fbeaea !important;
+}

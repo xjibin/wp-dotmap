@@ -1,6 +1,7 @@
 /*!
  * WP DotMap — frontend renderer
- * Renders each .wpdm-container element using the markers handed in via window.WPDMData[id].
+ * Renders each .wpdm-container element using the markers + customise settings
+ * provided via window.WPDMData[id].
  */
 (function () {
 	'use strict';
@@ -10,20 +11,29 @@
 		return;
 	}
 
-	// --- Map render constants ---
+	// --- Map render constants (structural; do not customise) ---
 	var WIDTH       = 1400;
 	var HEIGHT      = 700;
 	var DOT_SPACING = 7;
 	var DOT_RADIUS  = 1.55;
-	var LAND_COLOR  = '#d6d6d6';
 
-	// Marker visuals.
+	// --- Defaults (mirror PHP defaults; used when payload values are missing) ---
+	var DEFAULTS = {
+		dot_color:       '#d6d6d6',
+		bg_mode:         'transparent',
+		bg_color:        '#ffffff',
+		label_color:     '#1f2937',
+		label_outline:   '#ffffff',
+		label_size:      11,
+		label_size_unit: 'px',
+		marker_radius:   5
+	};
+
 	var DEFAULT_MARKER_COLOR = '#ef4444';
-	var MARKER_SIZE          = 5;
 
 	// Share the parsed land geometry across multiple maps on the same page.
 	var landCache    = null;
-	var landRequests = {}; // keyed by dataUrl
+	var landRequests = {};
 
 	function loadLand(dataUrl) {
 		if (landCache) {
@@ -45,11 +55,24 @@
 			.translate([WIDTH / 2, HEIGHT / 2]);
 	}
 
+	/** Merge defaults with whatever the payload provided. */
+	function resolveCustomise(c) {
+		c = c || {};
+		var out = {};
+		for (var k in DEFAULTS) {
+			if (DEFAULTS.hasOwnProperty(k)) {
+				out[k] = (c[k] !== undefined && c[k] !== null && c[k] !== '') ? c[k] : DEFAULTS[k];
+			}
+		}
+		return out;
+	}
+
 	function renderContainer(container) {
-		var id      = container.id;
-		var payload = (window.WPDMData && window.WPDMData[id]) || {};
-		var markers = Array.isArray(payload.markers) ? payload.markers : [];
-		var dataUrl = payload.dataUrl;
+		var id       = container.id;
+		var payload  = (window.WPDMData && window.WPDMData[id]) || {};
+		var markers  = Array.isArray(payload.markers) ? payload.markers : [];
+		var dataUrl  = payload.dataUrl;
+		var custom   = resolveCustomise(payload.customise);
 
 		if (!dataUrl) {
 			console.error('WP DotMap: no data URL provided for', id);
@@ -60,18 +83,26 @@
 		var loadingEl  = container.querySelector('.wpdm-loading');
 		var projection = makeProjection();
 
-		// Layers: dots underneath, markers on top.
+		// Apply background on the SVG too (so SVG exports/screenshots include it
+		// even though the container <div> also has it set).
+		if (custom.bg_mode === 'color') {
+			svg.style('background', custom.bg_color);
+		}
+
 		var dotsLayer    = svg.append('g').attr('class', 'wpdm-dots-layer');
 		var markerLayer  = svg.append('g').attr('class', 'wpdm-markers-layer');
 
+		// Precompute label font-size string (with unit).
+		var labelFontSize = parseFloat(custom.label_size) + custom.label_size_unit;
+		var markerRadius  = parseFloat(custom.marker_radius);
+		if (!(markerRadius > 0)) markerRadius = DEFAULTS.marker_radius;
+
 		loadLand(dataUrl).then(function (land) {
-			// Walk a regular pixel grid; keep points that fall on land.
 			var points = [];
 			for (var x = 0; x <= WIDTH;  x += DOT_SPACING) {
 				for (var y = 0; y <= HEIGHT; y += DOT_SPACING) {
 					var coords = projection.invert([x, y]);
 					if (!coords) continue;
-					// Skip extreme polar regions (visual noise on equirectangular).
 					if (coords[1] > 84 || coords[1] < -60) continue;
 					if (d3.geoContains(land, coords)) {
 						points.push([x, y]);
@@ -87,13 +118,12 @@
 				.attr('cx', function (d) { return d[0]; })
 				.attr('cy', function (d) { return d[1]; })
 				.attr('r',  DOT_RADIUS)
-				.attr('fill', LAND_COLOR);
+				.attr('fill', custom.dot_color);
 
 			if (loadingEl && loadingEl.parentNode) {
 				loadingEl.parentNode.removeChild(loadingEl);
 			}
 
-			// Add markers on top.
 			markers.forEach(function (m) {
 				var lat = parseFloat(m.lat);
 				var lng = parseFloat(m.lng);
@@ -110,19 +140,22 @@
 
 				g.append('circle')
 					.attr('class', 'wpdm-marker-pulse')
-					.attr('r', MARKER_SIZE)
+					.attr('r', markerRadius)
 					.attr('fill', color);
 
 				g.append('circle')
 					.attr('class', 'wpdm-marker-dot')
-					.attr('r', MARKER_SIZE)
+					.attr('r', markerRadius)
 					.attr('fill', color);
 
 				if (label) {
 					g.append('text')
 						.attr('class', 'wpdm-marker-label')
-						.attr('x', MARKER_SIZE + 5)
-						.attr('y', 4)
+						.attr('x', markerRadius + 5)
+						.attr('y', Math.round(markerRadius * 0.8))
+						.style('font-size', labelFontSize)
+						.style('fill', custom.label_color)
+						.style('stroke', custom.label_outline)
 						.text(label);
 				}
 			});

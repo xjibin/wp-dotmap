@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin menu page for WP DotMap.
+ * Admin menu + Markers page for WP DotMap.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -8,23 +8,36 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /* -------------------------------------------------------------------------
- * Register the top-level admin menu item
+ * Register top-level menu + submenus (Markers, Customise)
  * ---------------------------------------------------------------------- */
 add_action( 'admin_menu', 'wpdm_register_admin_menu' );
 function wpdm_register_admin_menu() {
 	add_menu_page(
-		__( 'WP DotMap', 'wp-dotmap' ),       // Page title
-		__( 'WP DotMap', 'wp-dotmap' ),       // Sidebar label
-		'manage_options',                     // Capability
-		'wp-dotmap',                          // Slug
-		'wpdm_render_admin_page',             // Renderer
-		'dashicons-location-alt',             // Icon
-		80                                    // Position
+		__( 'WP DotMap', 'wp-dotmap' ),
+		__( 'WP DotMap', 'wp-dotmap' ),
+		'manage_options',
+		'wp-dotmap',
+		'wpdm_render_admin_page',
+		'dashicons-location-alt',
+		80
 	);
+
+	// Rename the auto-generated first submenu entry from "WP DotMap" to "Markers".
+	add_submenu_page(
+		'wp-dotmap',
+		__( 'Markers', 'wp-dotmap' ),
+		__( 'Markers', 'wp-dotmap' ),
+		'manage_options',
+		'wp-dotmap',
+		'wpdm_render_admin_page'
+	);
+
+	// The Customise submenu is registered in includes/customise.php so
+	// concerns stay separated.
 }
 
 /* -------------------------------------------------------------------------
- * Enqueue admin assets only on our settings screen
+ * Enqueue admin assets only on the Markers screen
  * ---------------------------------------------------------------------- */
 add_action( 'admin_enqueue_scripts', 'wpdm_enqueue_admin_assets' );
 function wpdm_enqueue_admin_assets( $hook ) {
@@ -64,12 +77,10 @@ function wpdm_handle_save() {
 		$label      = isset( $row['label'] )  ? sanitize_text_field( wp_unslash( $row['label'] ) )  : '';
 		$color_raw  = isset( $row['color'] )  ? sanitize_text_field( wp_unslash( $row['color'] ) )  : '';
 
-		// Coordinates are required.
 		if ( '' === $coords_raw ) {
 			continue;
 		}
 
-		// Accept "lat, lng" with any reasonable spacing.
 		$parts = array_map( 'trim', explode( ',', $coords_raw ) );
 		if ( 2 !== count( $parts ) || '' === $parts[0] || '' === $parts[1] ) {
 			continue;
@@ -85,7 +96,6 @@ function wpdm_handle_save() {
 			continue;
 		}
 
-		// Normalize color: must be #RGB or #RRGGBB. Blank = default.
 		$color = '';
 		if ( '' !== $color_raw ) {
 			if ( preg_match( '/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $color_raw ) ) {
@@ -116,7 +126,7 @@ function wpdm_handle_save() {
 }
 
 /* -------------------------------------------------------------------------
- * Admin page renderer
+ * Admin page renderer (Markers)
  * ---------------------------------------------------------------------- */
 function wpdm_render_admin_page() {
 	$markers = get_option( WPDM_OPTION_KEY, array() );
@@ -125,7 +135,7 @@ function wpdm_render_admin_page() {
 	}
 	?>
 	<div class="wrap wpdm-wrap">
-		<h1><?php esc_html_e( 'WP DotMap', 'wp-dotmap' ); ?></h1>
+		<h1><?php esc_html_e( 'WP DotMap — Markers', 'wp-dotmap' ); ?></h1>
 
 		<div class="wpdm-intro">
 			<p>
@@ -173,17 +183,12 @@ function wpdm_render_admin_page() {
 			</p>
 		</form>
 
-		<!-- Template used by JS to clone new rows -->
 		<script type="text/template" id="wpdm-row-template"><?php wpdm_render_marker_row( '__INDEX__', array() ); ?></script>
 	</div>
 	<?php
 }
 
-/* -------------------------------------------------------------------------
- * Render a single marker row (used for both stored rows and the JS template)
- * ---------------------------------------------------------------------- */
 function wpdm_render_marker_row( $index, $marker ) {
-	// Reconstruct "lat, lng" string for display.
 	$coords = '';
 	if ( isset( $marker['lat'] ) && isset( $marker['lng'] ) && '' !== $marker['lat'] && '' !== $marker['lng'] ) {
 		$coords = $marker['lat'] . ', ' . $marker['lng'];
@@ -202,7 +207,6 @@ function wpdm_render_marker_row( $index, $marker ) {
 			</button>
 		</div>
 
-		<!-- Coordinates -->
 		<div class="wpdm-field">
 			<label for="wpdm-coords-<?php echo $idx; ?>">
 				<?php esc_html_e( 'Coordinates (Latitude, Longitude)', 'wp-dotmap' ); ?>
@@ -224,7 +228,6 @@ function wpdm_render_marker_row( $index, $marker ) {
 			</p>
 		</div>
 
-		<!-- Label -->
 		<div class="wpdm-field">
 			<label for="wpdm-label-<?php echo $idx; ?>">
 				<?php esc_html_e( 'Label', 'wp-dotmap' ); ?>
@@ -243,7 +246,6 @@ function wpdm_render_marker_row( $index, $marker ) {
 			</p>
 		</div>
 
-		<!-- Color -->
 		<div class="wpdm-field">
 			<label for="wpdm-color-<?php echo $idx; ?>">
 				<?php esc_html_e( 'Color (Hex code)', 'wp-dotmap' ); ?>
