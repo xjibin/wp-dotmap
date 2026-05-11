@@ -187,9 +187,27 @@ function wpdm_render_admin_page() {
 				</button>
 			</p>
 
-			<p class="submit">
+			<p class="submit wpdm-actions-bar">
 				<button type="submit" class="button button-primary"><?php esc_html_e( 'Save Markers', 'wp-dotmap' ); ?></button>
+
+				<span class="wpdm-actions-divider" aria-hidden="true"></span>
+
+				<button type="button" class="button button-secondary" id="wpdm-export-markers">
+					<span class="wpdm-action-icon" aria-hidden="true">↓</span>
+					<?php esc_html_e( 'Export Markers', 'wp-dotmap' ); ?>
+				</button>
+				<button type="button" class="button button-secondary" id="wpdm-import-markers">
+					<span class="wpdm-action-icon" aria-hidden="true">↑</span>
+					<?php esc_html_e( 'Import Markers', 'wp-dotmap' ); ?>
+				</button>
+				<input type="file" id="wpdm-import-markers-file" accept=".json,application/json" hidden />
+
+				<button type="button" class="button-link wpdm-sample-link" id="wpdm-sample-markers">
+					<?php esc_html_e( 'Download sample JSON', 'wp-dotmap' ); ?>
+				</button>
 			</p>
+
+			<div id="wpdm-inline-notice" class="wpdm-inline-notice" hidden></div>
 		</form>
 
 		<script type="text/template" id="wpdm-row-template"><?php wpdm_render_marker_row( '__INDEX__', array() ); ?></script>

@@ -48,6 +48,16 @@ A WordPress plugin that adds a clean, dotted world map with custom location mark
 4. To remove a marker, click **− Remove** in the top-right of its card.
 5. Click **Save Markers**.
 
+### Backing up, sharing, or reusing markers
+
+Next to the **Save Markers** button you'll find three more buttons:
+
+- **Export Markers** — downloads a JSON file (`wp-dotmap-markers.json`) containing every marker currently shown in the form. Use this to back up your markers, hand them to someone else, or move them to another site.
+- **Import Markers** — opens a file picker. Choose a `wp-dotmap-markers.json` file and the form is replaced with the imported markers. You still need to click **Save Markers** to actually apply them, so you can review or tweak first.
+- **Download sample JSON** — gets you a `wp-dotmap-markers-sample.json` file with six example markers (covering all the available label positions and a range of colors). Open it in any text editor to see the exact field format, then duplicate, edit, and re-import.
+
+> The export captures whatever is **currently in the form** — including any unsaved edits — so what you see is what gets downloaded.
+
 ---
 
 ## Customising the map's appearance
@@ -64,6 +74,14 @@ Go to **WP DotMap → Customise** to control:
 Click **Save Changes** to apply, or **Reset to defaults** to revert all customisation in one click.
 
 Each color field has a native color picker, a hex text input, and a live swatch — they all stay in sync as you change any of them.
+
+### Backing up or sharing customisation
+
+Next to **Reset to defaults** you'll find three more buttons:
+
+- **Export** — downloads a JSON file (`wp-dotmap-customise.json`) containing all current customisation values.
+- **Import** — opens a file picker; the chosen file replaces the form values. Click **Save Changes** afterward to apply.
+- **Download sample JSON** — gets you a `wp-dotmap-customise-sample.json` showing the default values and exact schema.
 
 ---
 
@@ -129,6 +147,7 @@ wp-dotmap/
 
 ## Version
 
+- **1.3.0** — Added **Export / Import / Sample JSON** to both the *Markers* and *Customise* pages. Back up your markers and styling, copy them between sites, or share a config — all client-side, no server round-trip.
 - **1.2.0** — Added per-marker **Label Position** picker: choose between Default and 8 directions (Top, Top Right, Right, Bottom Right, Bottom, Bottom Left, Left, Top Left). Existing markers keep their current rendering (Default).
 - **1.1.0** — Added **Customise** submenu: map dots color, background (transparent / solid color), label text color & outline, label text size (px/rem), marker dot radius, and reset to defaults.
 - **1.0.0** — Initial release.

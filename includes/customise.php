@@ -307,7 +307,7 @@ function wpdm_render_customise_page() {
 				</div>
 			</div>
 
-			<p class="submit wpdm-customise-actions">
+			<p class="submit wpdm-customise-actions wpdm-actions-bar">
 				<button type="submit" class="button button-primary"><?php esc_html_e( 'Save Changes', 'wp-dotmap' ); ?></button>
 				<button
 					type="submit"
@@ -318,7 +318,25 @@ function wpdm_render_customise_page() {
 				>
 					<?php esc_html_e( 'Reset to defaults', 'wp-dotmap' ); ?>
 				</button>
+
+				<span class="wpdm-actions-divider" aria-hidden="true"></span>
+
+				<button type="button" class="button button-secondary" id="wpdm-export-customise">
+					<span class="wpdm-action-icon" aria-hidden="true">↓</span>
+					<?php esc_html_e( 'Export', 'wp-dotmap' ); ?>
+				</button>
+				<button type="button" class="button button-secondary" id="wpdm-import-customise">
+					<span class="wpdm-action-icon" aria-hidden="true">↑</span>
+					<?php esc_html_e( 'Import', 'wp-dotmap' ); ?>
+				</button>
+				<input type="file" id="wpdm-import-customise-file" accept=".json,application/json" hidden />
+
+				<button type="button" class="button-link wpdm-sample-link" id="wpdm-sample-customise">
+					<?php esc_html_e( 'Download sample JSON', 'wp-dotmap' ); ?>
+				</button>
 			</p>
+
+			<div id="wpdm-customise-inline-notice" class="wpdm-inline-notice" hidden></div>
 		</form>
 	</div>
 	<?php

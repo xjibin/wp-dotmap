@@ -382,3 +382,72 @@
 	border-radius: 50%;
 	box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
 }
+
+/* =========================================================================
+ * Actions toolbar (Save + Export/Import + Sample) and inline notices
+ * ====================================================================== */
+.wpdm-actions-bar {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+	padding: 0;
+}
+
+.wpdm-actions-bar .button {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.wpdm-action-icon {
+	font-weight: 700;
+	font-size: 14px;
+	line-height: 1;
+}
+
+.wpdm-actions-divider {
+	display: inline-block;
+	width: 1px;
+	height: 22px;
+	background: #c3c4c7;
+	margin: 0 4px;
+}
+
+.wpdm-sample-link {
+	color: #2271b1 !important;
+	text-decoration: underline !important;
+	font-size: 13px;
+	padding: 4px 6px !important;
+}
+.wpdm-sample-link:hover {
+	color: #135e96 !important;
+}
+
+/* Inline notice (used after import/export) */
+.wpdm-inline-notice {
+	margin: 12px 0 0;
+	padding: 10px 14px;
+	border-radius: 4px;
+	border-left: 4px solid #72aee6;
+	background: #f0f6fc;
+	color: #1d2327;
+	font-size: 13px;
+	line-height: 1.5;
+	max-width: 900px;
+}
+.wpdm-inline-notice.wpdm-notice-success {
+	background: #edfaef;
+	border-left-color: #00a32a;
+}
+.wpdm-inline-notice.wpdm-notice-error {
+	background: #fcf0f1;
+	border-left-color: #d63638;
+}
+.wpdm-inline-notice.wpdm-notice-info {
+	background: #f0f6fc;
+	border-left-color: #2271b1;
+}
+.wpdm-inline-notice[hidden] {
+	display: none !important;
+}
