@@ -67,6 +67,41 @@
 		return out;
 	}
 
+	/**
+	 * Compute label placement (x, y, text-anchor, dominant-baseline) for a marker
+	 * label, given a desired position and the marker's radius.
+	 *
+	 * The "default" position preserves the v1.1.x rendering (right of the dot,
+	 * slightly biased downward). The eight directional positions arrange the
+	 * label around the dot's perimeter.
+	 */
+	function getLabelGeometry(position, r) {
+		var pad  = 4;          // breathing room from the dot edge
+		var diag = r * 0.7;    // x/y offset along diagonals (≈ r·cos45°)
+
+		switch (position) {
+			case 'top':
+				return { x: 0,                 y: -(r + pad),     anchor: 'middle', baseline: 'text-after-edge' };
+			case 'top-right':
+				return { x: diag + pad,        y: -(diag + pad),  anchor: 'start',  baseline: 'text-after-edge' };
+			case 'right':
+				return { x: r + pad,           y: 0,              anchor: 'start',  baseline: 'central' };
+			case 'bottom-right':
+				return { x: diag + pad,        y: diag + pad,     anchor: 'start',  baseline: 'text-before-edge' };
+			case 'bottom':
+				return { x: 0,                 y: r + pad,        anchor: 'middle', baseline: 'text-before-edge' };
+			case 'bottom-left':
+				return { x: -(diag + pad),     y: diag + pad,     anchor: 'end',    baseline: 'text-before-edge' };
+			case 'left':
+				return { x: -(r + pad),        y: 0,              anchor: 'end',    baseline: 'central' };
+			case 'top-left':
+				return { x: -(diag + pad),     y: -(diag + pad),  anchor: 'end',    baseline: 'text-after-edge' };
+			case 'default':
+			default:
+				return { x: r + 5,             y: Math.round(r * 0.8), anchor: 'start', baseline: 'alphabetic' };
+		}
+	}
+
 	function renderContainer(container) {
 		var id       = container.id;
 		var payload  = (window.WPDMData && window.WPDMData[id]) || {};
@@ -149,10 +184,13 @@
 					.attr('fill', color);
 
 				if (label) {
+					var geom = getLabelGeometry(m.label_position || 'default', markerRadius);
 					g.append('text')
 						.attr('class', 'wpdm-marker-label')
-						.attr('x', markerRadius + 5)
-						.attr('y', Math.round(markerRadius * 0.8))
+						.attr('x', geom.x)
+						.attr('y', geom.y)
+						.attr('text-anchor', geom.anchor)
+						.attr('dominant-baseline', geom.baseline)
 						.style('font-size', labelFontSize)
 						.style('fill', custom.label_color)
 						.style('stroke', custom.label_outline)

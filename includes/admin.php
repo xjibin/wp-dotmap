@@ -72,10 +72,16 @@ function wpdm_handle_save() {
 	$clean   = array();
 	$raw     = isset( $_POST['markers'] ) && is_array( $_POST['markers'] ) ? $_POST['markers'] : array();
 
+	$valid_positions = array(
+		'default', 'top', 'top-right', 'right', 'bottom-right',
+		'bottom', 'bottom-left', 'left', 'top-left',
+	);
+
 	foreach ( $raw as $row ) {
-		$coords_raw = isset( $row['coords'] ) ? sanitize_text_field( wp_unslash( $row['coords'] ) ) : '';
-		$label      = isset( $row['label'] )  ? sanitize_text_field( wp_unslash( $row['label'] ) )  : '';
-		$color_raw  = isset( $row['color'] )  ? sanitize_text_field( wp_unslash( $row['color'] ) )  : '';
+		$coords_raw    = isset( $row['coords'] ) ? sanitize_text_field( wp_unslash( $row['coords'] ) ) : '';
+		$label         = isset( $row['label'] )  ? sanitize_text_field( wp_unslash( $row['label'] ) )  : '';
+		$color_raw     = isset( $row['color'] )  ? sanitize_text_field( wp_unslash( $row['color'] ) )  : '';
+		$position_raw  = isset( $row['label_position'] ) ? sanitize_text_field( wp_unslash( $row['label_position'] ) ) : 'default';
 
 		if ( '' === $coords_raw ) {
 			continue;
@@ -103,11 +109,14 @@ function wpdm_handle_save() {
 			}
 		}
 
+		$label_position = in_array( $position_raw, $valid_positions, true ) ? $position_raw : 'default';
+
 		$clean[] = array(
-			'lat'   => $lat,
-			'lng'   => $lng,
-			'label' => $label,
-			'color' => $color,
+			'lat'            => $lat,
+			'lng'            => $lng,
+			'label'          => $label,
+			'color'          => $color,
+			'label_position' => $label_position,
 		);
 	}
 
@@ -193,8 +202,9 @@ function wpdm_render_marker_row( $index, $marker ) {
 	if ( isset( $marker['lat'] ) && isset( $marker['lng'] ) && '' !== $marker['lat'] && '' !== $marker['lng'] ) {
 		$coords = $marker['lat'] . ', ' . $marker['lng'];
 	}
-	$label = isset( $marker['label'] ) ? $marker['label'] : '';
-	$color = isset( $marker['color'] ) ? $marker['color'] : '';
+	$label          = isset( $marker['label'] )          ? $marker['label']          : '';
+	$color          = isset( $marker['color'] )          ? $marker['color']          : '';
+	$label_position = isset( $marker['label_position'] ) ? $marker['label_position'] : 'default';
 
 	$idx = esc_attr( $index );
 	?>
@@ -273,6 +283,55 @@ function wpdm_render_marker_row( $index, $marker ) {
 				<code>#10b981</code> <?php esc_html_e( 'green', 'wp-dotmap' ); ?>,
 				<code>#f97316</code> <?php esc_html_e( 'orange', 'wp-dotmap' ); ?>.
 				<?php esc_html_e( 'Leave blank for default red.', 'wp-dotmap' ); ?>
+			</p>
+		</div>
+
+		<div class="wpdm-field">
+			<label><?php esc_html_e( 'Label Position', 'wp-dotmap' ); ?></label>
+			<div class="wpdm-label-position">
+				<label class="wpdm-pos-default">
+					<input
+						type="radio"
+						name="markers[<?php echo $idx; ?>][label_position]"
+						value="default"
+						<?php checked( $label_position, 'default' ); ?>
+					/>
+					<span><?php esc_html_e( 'Default (current position — right of marker)', 'wp-dotmap' ); ?></span>
+				</label>
+
+				<div class="wpdm-pos-grid" role="radiogroup" aria-label="<?php esc_attr_e( 'Label position around marker', 'wp-dotmap' ); ?>">
+					<?php
+					$positions_grid = array(
+						'top-left'     => __( 'Top Left',     'wp-dotmap' ),
+						'top'          => __( 'Top',          'wp-dotmap' ),
+						'top-right'    => __( 'Top Right',    'wp-dotmap' ),
+						'left'         => __( 'Left',         'wp-dotmap' ),
+						'center'       => '', // non-clickable center showing the marker icon
+						'right'        => __( 'Right',        'wp-dotmap' ),
+						'bottom-left'  => __( 'Bottom Left',  'wp-dotmap' ),
+						'bottom'       => __( 'Bottom',       'wp-dotmap' ),
+						'bottom-right' => __( 'Bottom Right', 'wp-dotmap' ),
+					);
+					foreach ( $positions_grid as $pos_value => $pos_label ) :
+						if ( 'center' === $pos_value ) : ?>
+							<div class="wpdm-pos-center" aria-hidden="true"></div>
+						<?php else : ?>
+							<label class="wpdm-pos-cell-wrap" title="<?php echo esc_attr( $pos_label ); ?>" aria-label="<?php echo esc_attr( $pos_label ); ?>">
+								<input
+									type="radio"
+									name="markers[<?php echo $idx; ?>][label_position]"
+									value="<?php echo esc_attr( $pos_value ); ?>"
+									<?php checked( $label_position, $pos_value ); ?>
+								/>
+								<span class="wpdm-pos-cell" data-pos="<?php echo esc_attr( $pos_value ); ?>"></span>
+							</label>
+						<?php endif;
+					endforeach;
+					?>
+				</div>
+			</div>
+			<p class="description">
+				<?php esc_html_e( 'Choose where the label appears relative to the marker dot. The red dot in the center represents the marker — click any surrounding square to place the label in that direction. Default uses the original position.', 'wp-dotmap' ); ?>
 			</p>
 		</div>
 	</div>

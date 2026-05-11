@@ -42,6 +42,8 @@ A WordPress plugin that adds a clean, dotted world map with custom location mark
 
    - **Color (Hex code)** — The color of the marker dot. Must be a hex code starting with `#`, like `#ef4444` (red), `#2563eb` (blue), `#10b981` (green). Leave blank to use the default red. A live swatch next to the field shows the current color.
 
+   - **Label Position** — Where the label appears relative to the marker dot. Click any of the 8 surrounding squares in the position picker (the red dot in the center represents the marker), or pick **Default** to keep the original position (right of the marker, with a slight downward offset). Available positions: *Default, Top, Top Right, Right, Bottom Right, Bottom, Bottom Left, Left, Top Left*.
+
 3. To add more markers, click **+ Add Marker**.
 4. To remove a marker, click **− Remove** in the top-right of its card.
 5. Click **Save Markers**.
@@ -127,5 +129,6 @@ wp-dotmap/
 
 ## Version
 
+- **1.2.0** — Added per-marker **Label Position** picker: choose between Default and 8 directions (Top, Top Right, Right, Bottom Right, Bottom, Bottom Left, Left, Top Left). Existing markers keep their current rendering (Default).
 - **1.1.0** — Added **Customise** submenu: map dots color, background (transparent / solid color), label text color & outline, label text size (px/rem), marker dot radius, and reset to defaults.
 - **1.0.0** — Initial release.

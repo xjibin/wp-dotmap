@@ -263,3 +263,122 @@
 .wpdm-btn-reset:hover {
 	background: #fbeaea !important;
 }
+
+/* =========================================================================
+ * Label position picker (per-marker)
+ * ====================================================================== */
+.wpdm-label-position {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin: 4px 0 6px;
+}
+
+.wpdm-pos-default {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	cursor: pointer;
+	user-select: none;
+	font-size: 13px;
+	color: #1d2327;
+}
+
+.wpdm-pos-default input {
+	margin: 0;
+}
+
+.wpdm-pos-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 34px);
+	grid-template-rows: repeat(3, 34px);
+	gap: 4px;
+	width: max-content;
+	padding: 6px;
+	background: #f6f7f7;
+	border-radius: 4px;
+	border: 1px solid #dcdcde;
+}
+
+/* Each clickable position cell */
+.wpdm-pos-cell-wrap {
+	display: block;
+	position: relative;
+	cursor: pointer;
+}
+
+/* Hide the actual radio input — keep it accessible via keyboard */
+.wpdm-pos-cell-wrap input {
+	position: absolute;
+	inset: 0;
+	opacity: 0;
+	margin: 0;
+	cursor: pointer;
+}
+
+.wpdm-pos-cell {
+	display: block;
+	width: 34px;
+	height: 34px;
+	background: #ffffff;
+	border: 1px solid #c3c4c7;
+	border-radius: 3px;
+	position: relative;
+	transition: background 0.1s ease, border-color 0.1s ease;
+}
+
+/* Indicator dot inside each cell, positioned in the corresponding direction */
+.wpdm-pos-cell::before {
+	content: "";
+	position: absolute;
+	width: 8px;
+	height: 4px;
+	background: #50575e;
+	border-radius: 1px;
+	transition: background 0.1s ease;
+}
+
+.wpdm-pos-cell[data-pos="top-left"]::before     { top: 4px;    left: 4px; }
+.wpdm-pos-cell[data-pos="top"]::before          { top: 4px;    left: 50%; transform: translateX(-50%); }
+.wpdm-pos-cell[data-pos="top-right"]::before    { top: 4px;    right: 4px; }
+.wpdm-pos-cell[data-pos="left"]::before         { top: 50%;    left: 4px; transform: translateY(-50%); }
+.wpdm-pos-cell[data-pos="right"]::before        { top: 50%;    right: 4px; transform: translateY(-50%); }
+.wpdm-pos-cell[data-pos="bottom-left"]::before  { bottom: 4px; left: 4px; }
+.wpdm-pos-cell[data-pos="bottom"]::before       { bottom: 4px; left: 50%; transform: translateX(-50%); }
+.wpdm-pos-cell[data-pos="bottom-right"]::before { bottom: 4px; right: 4px; }
+
+/* Hover */
+.wpdm-pos-cell-wrap:hover .wpdm-pos-cell {
+	border-color: #2271b1;
+	background: #f0f6fc;
+}
+
+/* Selected state — input:checked + sibling .wpdm-pos-cell */
+.wpdm-pos-cell-wrap input:checked + .wpdm-pos-cell {
+	background: #2271b1;
+	border-color: #2271b1;
+}
+.wpdm-pos-cell-wrap input:checked + .wpdm-pos-cell::before {
+	background: #ffffff;
+}
+
+/* Keyboard focus ring on the cell when the hidden radio is focused */
+.wpdm-pos-cell-wrap input:focus-visible + .wpdm-pos-cell {
+	outline: 2px solid #2271b1;
+	outline-offset: 2px;
+}
+
+/* Center cell — non-clickable marker preview */
+.wpdm-pos-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.wpdm-pos-center::before {
+	content: "";
+	width: 10px;
+	height: 10px;
+	background: #ef4444;
+	border-radius: 50%;
+	box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+}
