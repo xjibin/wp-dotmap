@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       WP DotMap
- * Plugin URI:        https://example.com/wp-dotmap
+ * Plugin URI:        https://github.com/xjibin/wp-dotmap/
  * Description:       Embed a clean and elegant dotted world map with custom location markers on any page or post using shortcode with markers using coordinates, label, color.
  * Version:           1.0.0
  * Requires at least: 5.0
