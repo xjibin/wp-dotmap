@@ -1,0 +1,159 @@
+/*!
+ * WP DotMap — admin styles
+ */
+.wpdm-wrap {
+	max-width: 900px;
+}
+
+.wpdm-intro {
+	background: #fff;
+	border-left: 4px solid #2271b1;
+	padding: 12px 16px;
+	margin: 16px 0 24px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.wpdm-intro p {
+	margin: 0;
+}
+
+.wpdm-intro code {
+	background: #f0f0f1;
+	padding: 2px 6px;
+	border-radius: 3px;
+	font-size: 13px;
+}
+
+/* ---- Marker row card ---- */
+.wpdm-marker-list {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.wpdm-marker-row {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 18px 22px 8px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.wpdm-marker-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 8px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.wpdm-marker-title {
+	font-size: 14px;
+	font-weight: 600;
+	color: #1d2327;
+	letter-spacing: 0.02em;
+}
+
+.wpdm-btn-remove {
+	color: #b32d2e !important;
+	text-decoration: none !important;
+	font-weight: 500;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.wpdm-btn-remove:hover {
+	color: #8a1f1f !important;
+}
+
+.wpdm-minus,
+.wpdm-plus {
+	display: inline-block;
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+/* ---- Fields ---- */
+.wpdm-field {
+	margin: 14px 0 18px;
+}
+
+.wpdm-field label {
+	display: block;
+	font-weight: 600;
+	margin-bottom: 6px;
+	color: #1d2327;
+}
+
+.wpdm-input {
+	width: 100%;
+	max-width: 520px;
+}
+
+.wpdm-input-coords {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	font-size: 13px;
+}
+
+.wpdm-input-color {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	width: 140px !important;
+	max-width: 140px;
+	text-transform: lowercase;
+}
+
+.wpdm-color-wrap {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.wpdm-color-swatch {
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	border: 1px solid #c3c4c7;
+	box-shadow: inset 0 0 0 2px #fff;
+	transition: background 0.15s ease;
+}
+
+.wpdm-color-swatch.wpdm-color-invalid {
+	background: repeating-linear-gradient(
+		45deg,
+		#fde2e2,
+		#fde2e2 4px,
+		#f9c5c5 4px,
+		#f9c5c5 8px
+	) !important;
+	border-color: #b32d2e;
+}
+
+.wpdm-field .description {
+	margin-top: 6px;
+	color: #50575e;
+	font-size: 13px;
+	line-height: 1.55;
+	max-width: 720px;
+}
+
+.wpdm-field .description code {
+	background: #f0f0f1;
+	padding: 1px 5px;
+	border-radius: 3px;
+	font-size: 12px;
+}
+
+/* ---- Add button ---- */
+.wpdm-row-controls {
+	margin: 18px 0 28px;
+}
+
+.wpdm-btn-add {
+	display: inline-flex !important;
+	align-items: center;
+	gap: 6px;
+}
